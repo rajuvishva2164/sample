@@ -1,418 +1,333 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-body {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  background-color: white;
-  font-family: "Quicksand", sans-serif;
-}
-.container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-100%, -50%);
-  transition: 0.2s;
+/* ─── RESET & ROOT ─── */
+*, *::before, *::after { box-sizing: border-box; margin: 8; padding: 8; }
+
+:root {
+  --cream: #faf7f2;
+  --warm-white: #fff9f4;
+  --gold: #c9a96e;
+  --gold-light: #e8d5b0;
+  --gold-pale: #f5ecd8;
+  --charcoal: #2a2420;
+  --soft-brown: #7a6555;
+  --mist: #ede8e0;
 }
 
-.question-container {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transition: 0.2s;
+html, body {
+  height: 100%;
+  background: var(--cream);
+  font-family: 'Jost', sans-serif;
+  color: var(--charcoal);
+  overflow: hidden;
 }
-.local-gif {
-  width: 100%;
-  max-width: 300px;
-  border-radius: 10px;
-  display: block;
-  margin: 0 auto 3rem auto;
+
+/* ─── NOISE TEXTURE OVERLAY ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
 }
-.question {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-}
-.button-container {
+
+/* ─── PAGES ─── */
+.page {
+  position: fixed;
+  inset: 0;
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 1.5rem;
+  transition: opacity 0.9s ease, transform 0.9s ease;
 }
-.btn {
-  position: absolute;
-  border: none;
-  border-radius: 50px;
-  padding: 14px 24px;
-  font-family: "Poppins", sans-serif;
-  font-size: 18px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #ff54a4;
-  color: white;
-  transform: scale(1.05);
-  box-shadow: 0px 4px 15px
-   rgba(255, 107, 129, 0.5);
-}
-.btn:hover {
-  background-color: #ffa4b1;
-  transform: scale(1.1);
-  box-shadow: 0px 6px 20px rgba(255, 107, 129, 0.7);
-  text-shadow: 1px 1px 5px rgba(255, 182, 193, 0.8);
+.page.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(18px);
 }
 
-.yes-btn {
-  right: 54%;
-}
-.no-btn {
-  left: 54%;
-}
+/* ─── DECORATIVE LINES ─── */
+.deco-line { position: fixed; background: var(--gold-light); opacity: 0.45; }
+.deco-line.h { height: 1px; left: 0; right: 0; }
+.deco-line.v { width: 1px; top: 0; bottom: 0; }
+.deco-line.top    { top: 40px; }
+.deco-line.bottom { bottom: 40px; }
+.deco-line.left   { left: 40px; }
+.deco-line.right  { right: 40px; }
 
-.result-container {
-  display: none;
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  -o-transform: translate(-50%, -50%);
-  -ms-transform: translate(-50%, -50%);
-  -webkit-transform: translate(-50%, -50%);
-  -moz-transform: translate(-100%, -50%);
-  transition: 0.2s;
+/* ─── CORNER ORNAMENTS ─── */
+.corner {
+  position: fixed;
+  width: 48px; height: 48px;
+  border-color: var(--gold);
+  border-style: solid;
+  opacity: 0.5;
 }
-.gif-result {
-  border-radius: 10px;
-  margin-bottom: 2rem;
-}
-.result-container h2 {
-  font-size: 3.2rem;
+.corner.tl { top: 28px; left: 28px;   border-width: 1px 0 0 1px; }
+.corner.tr { top: 28px; right: 28px;  border-width: 1px 1px 0 0; }
+.corner.bl { bottom: 28px; left: 28px;  border-width: 0 0 1px 1px; }
+.corner.br { bottom: 28px; right: 28px; border-width: 0 1px 1px 0; }
+
+/* ─── LOGIN PAGE ─── */
+#login-page { flex-direction: column; gap: 0; }
+
+.login-box {
   text-align: center;
+  animation: fadeUp 0.6s ease both;
 }
 
-/* heart loader */
-.cssload-main {
-  display: none;
-  position: absolute;
-  content: "";
-  top: 17%;
-  left: 50%;
-  margin: 200px auto 0 auto;
-  transform: translate(-100%, -50%);
-  -o-transform: translate(-100%, -240%);
-  -ms-transform: translate(-100%, -240%);
-  -webkit-transform: translate(-100%, -240%);
-  -moz-transform: translate(-100%, -240%);
+.login-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.1s both;
 }
 
-.cssload-main * {
-  font-size: 62px;
+.login-title {
+  font-family: 'Times New Roman', serif;
+  font-weight: 300;
+  font-size: clamp(38px, 7vw, 72px);
+  line-height: 1.1;
+  color: var(--charcoal);
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.2s both;
 }
 
-.cssload-heart {
-  animation: cssload-heart 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
-  -o-animation: cssload-heart 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -ms-animation: cssload-heart 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -webkit-animation: cssload-heart 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -moz-animation: cssload-heart 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  top: 50%;
-  content: "";
-  left: 50%;
-  position: absolute;
+.login-subtitle {
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: clamp(15px, 2.5vw, 20px);
+  color: var(--soft-brown);
+  margin-bottom: 52px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.3s both;
 }
 
-.cssload-heartL {
-  width: 1em;
-  height: 1em;
-  border: 1px solid #ff0000;
-  background-color: #ff0000;
-  content: "";
-  position: absolute;
-  display: block;
-  border-radius: 100%;
-  animation: cssload-heartL 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
-  -o-animation: cssload-heartL 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -ms-animation: cssload-heartL 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -webkit-animation: cssload-heartL 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -moz-animation: cssload-heartL 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  transform: translate(-28px, -27px);
-  -o-transform: translate(-28px, -27px);
-  -ms-transform: translate(-28px, -27px);
-  -webkit-transform: translate(-28px, -27px);
-  -moz-transform: translate(-28px, -27px);
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.35s both;
+}
+.divider::before, .divider::after {
+  content: '';
+  width: 60px;
+  height: 1px;
+  background: var(--gold-light);
+}
+.divider-gem {
+  color: var(--gold);
+  font-size: 11px;
+  letter-spacing: 6px;
 }
 
-.cssload-heartR {
-  width: 1em;
-  height: 1em;
-  border: 1px solid #ff0000;
-  background-color: #ff0000;
-  content: "";
-  position: absolute;
-  display: block;
-  border-radius: 100%;
-  transform: translate(28px, -27px);
-  -o-transform: translate(28px, -27px);
-  -ms-transform: translate(28px, -27px);
-  -webkit-transform: translate(28px, -27px);
-  -moz-transform: translate(28px, -27px);
-  animation: cssload-heartR 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
-  -o-animation: cssload-heartR 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -ms-animation: cssload-heartR 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -webkit-animation: cssload-heartR 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -moz-animation: cssload-heartR 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-}
-
-.cssload-square {
-  width: 1em;
-  height: 1em;
-  border: 1px solid #ff0000;
-  background-color: #ff0000;
+.input-group {
   position: relative;
-  display: block;
-  content: "";
-  transform: scale(1) rotate(-45deg);
-  -o-transform: scale(1) rotate(-45deg);
-  -ms-transform: scale(1) rotate(-45deg);
-  -webkit-transform: scale(1) rotate(-45deg);
-  -moz-transform: scale(1) rotate(-45deg);
-  animation: cssload-square 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
-  -o-animation: cssload-square 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -ms-animation: cssload-square 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -webkit-animation: cssload-square 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -moz-animation: cssload-square 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
+  margin-bottom: 12px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.45s both;
 }
 
-.cssload-shadow {
-  top: 97px;
-  left: 50%;
-  content: "";
+.input-group input {
+  width: 280px;
+  padding: 16px 20px;
+  background: var(--warm-white);
+  border: 1px solid var(--gold-light);
+  outline: none;
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.15em;
+  color: var(--charcoal);
+  text-align: center;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: var(--gold-light);
+  letter-spacing: 0.2em;
+  font-size: 11px;
+}
+
+.input-group input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,169,110,0.08);
+}
+
+.error-msg {
+  font-family: 'Jost', sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: #b07060;
+  min-height: 18px;
+  margin-bottom: 24px;
+  text-transform: uppercase;
+}
+
+.login-btn {
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.55s both;
+  display: inline-block;
+  padding: 14px 52px;
+  background: var(--charcoal);
+  color: var(--gold-pale);
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease, transform 0.2s ease;
+  margin-top: 8px;
+}
+
+.login-btn:hover {
+  background: var(--gold);
+  color: var(--charcoal);
+  transform: translateY(-1px);
+}
+
+.login-hint {
+  opacity: 0;
+  animation: fadeUp 0.6s ease 0.65s both;
+  margin-top: 32px;
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--gold-light);
+  text-transform: uppercase;
+}
+
+/* ─── BIRTHDAY PAGE ─── */
+#birthday-page {
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.bday-inner {
+  text-align: center;
+  max-width: 680px;
+  padding: 20px;
+}
+
+.bday-eyebrow {
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 9px;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 24px;
+  opacity: 0;
+}
+
+.bday-name {
+  font-family: 'Times New Roman', serif;
+  font-weight: 300;
+  font-size: clamp(52px, 11vw, 110px);
+  line-height: 0.95;
+  color: var(--charcoal);
+  margin-bottom: 6px;
+  opacity: 0;
+}
+
+.bday-tagline {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: inherit;
+  font-size: clamp(16px, 3vw, 24px);
+  color: var(--soft-brown);
+  font-weight: 300;
+  margin-bottom: 44px;
+  opacity: 0;
+}
+
+.ornament-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 48px;
+  opacity: 0;
+}
+.ornament-row span { color: var(--gold); font-size: 13px; letter-spacing: 8px; }
+.ornament-row::before, .ornament-row::after {
+  content: '';
+  height: 1px;
+  width: 80px;
+  background: linear-gradient(to right, transparent, var(--gold-light));
+}
+.ornament-row::after { background: linear-gradient(to left, transparent, var(--gold-light)); }
+
+.message-card {
+  background: var(--warm-white);
+  border: 1px solid var(--gold-light);
+  padding: 44px 52px;
   position: relative;
-  display: block;
-  bottom: -0.5em;
-  width: 1em;
-  height: 0.24em;
-  background-color: rgb(215, 215, 215);
-  border: 1px solid rgb(215, 215, 215);
-  border-radius: 50%;
-  animation: cssload-shadow 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite normal;
-  -o-animation: cssload-shadow 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -ms-animation: cssload-shadow 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -webkit-animation: cssload-shadow 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
-  -moz-animation: cssload-shadow 2.88s cubic-bezier(0.75, 0, 0.5, 1) infinite
-    normal;
+  margin: 0 auto;
+  max-width: 560px;
+  opacity: 0;
 }
 
-@keyframes cssload-square {
-  50% {
-    border-radius: 100%;
-    transform: scale(0.5) rotate(-45deg);
-  }
-  100% {
-    transform: scale(1) rotate(-45deg);
-  }
+.message-card::before, .message-card::after {
+  content: '✦';
+  position: absolute;
+  color: var(--gold);
+  font-size: 10px;
+  opacity: 0.6;
+}
+.message-card::before { top: 14px; left: 50%; transform: translateX(-50%); }
+.message-card::after  { bottom: 14px; left: 50%; transform: translateX(-50%); }
+
+.message-text {
+  font-family: 'Times New Roman', serif;
+  font-style: inherit;
+  font-weight: 200;
+  font-size: clamp(20px, 3.5vw, 20px);
+  line-height: 1.85;
+  color: var(--charcoal);
 }
 
-@-o-keyframes cssload-square {
-  50% {
-    border-radius: 100%;
-    -o-transform: scale(0.5) rotate(-45deg);
-  }
-  100% {
-    -o-transform: scale(1) rotate(-45deg);
-  }
+.message-from {
+  margin-top: 20px;
+  font-family: 'Jost', sans-serif;
+  font-weight: 200;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
 }
 
-@-ms-keyframes cssload-square {
-  50% {
-    border-radius: 100%;
-    -ms-transform: scale(0.5) rotate(-45deg);
-  }
-  100% {
-    -ms-transform: scale(1) rotate(-45deg);
-  }
+.confetti-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
 }
 
-@-webkit-keyframes cssload-square {
-  50% {
-    border-radius: 100%;
-    -webkit-transform: scale(0.5) rotate(-45deg);
-  }
-  100% {
-    -webkit-transform: scale(1) rotate(-45deg);
-  }
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-@-moz-keyframes cssload-square {
-  50% {
-    border-radius: 100%;
-    -moz-transform: scale(0.5) rotate(-45deg);
-  }
-  100% {
-    -moz-transform: scale(1) rotate(-45deg);
-  }
-}
+.reveal { animation: fadeUp 0.6s ease both; }
+.d1 { animation-delay: 0s; }
+.d2 { animation-delay: 0.1s; }
+.d3 { animation-delay: 0.2s; }
+.d4 { animation-delay: 0.3s; }
+.d5 { animation-delay: 0.4s; }
+.d6 { animation-delay: 0.5s; }
 
-@keyframes cssload-heart {
-  50% {
-    transform: rotate(360deg);
-  }
-  100% {
-    transform: rotate(720deg);
-  }
-}
-
-@-o-keyframes cssload-heart {
-  50% {
-    -o-transform: rotate(360deg);
-  }
-  100% {
-    -o-transform: rotate(720deg);
-  }
-}
-
-@-ms-keyframes cssload-heart {
-  50% {
-    -ms-transform: rotate(360deg);
-  }
-  100% {
-    -ms-transform: rotate(720deg);
-  }
-}
-
-@-webkit-keyframes cssload-heart {
-  50% {
-    -webkit-transform: rotate(360deg);
-  }
-  100% {
-    -webkit-transform: rotate(720deg);
-  }
-}
-
-@-moz-keyframes cssload-heart {
-  50% {
-    -moz-transform: rotate(360deg);
-  }
-  100% {
-    -moz-transform: rotate(720deg);
-  }
-}
-
-@keyframes cssload-heartL {
-  60% {
-    transform: scale(0.4);
-  }
-}
-
-@-o-keyframes cssload-heartL {
-  60% {
-    -o-transform: scale(0.4);
-  }
-}
-
-@-ms-keyframes cssload-heartL {
-  60% {
-    -ms-transform: scale(0.4);
-  }
-}
-
-@-webkit-keyframes cssload-heartL {
-  60% {
-    -webkit-transform: scale(0.4);
-  }
-}
-
-@-moz-keyframes cssload-heartL {
-  60% {
-    -moz-transform: scale(0.4);
-  }
-}
-
-@keyframes cssload-heartR {
-  40% {
-    transform: scale(0.4);
-  }
-}
-
-@-o-keyframes cssload-heartR {
-  40% {
-    -o-transform: scale(0.4);
-  }
-}
-
-@-ms-keyframes cssload-heartR {
-  40% {
-    -ms-transform: scale(0.4);
-  }
-}
-
-@-webkit-keyframes cssload-heartR {
-  40% {
-    -webkit-transform: scale(0.4);
-  }
-}
-
-@-moz-keyframes cssload-heartR {
-  40% {
-    -moz-transform: scale(0.4);
-  }
-}
-
-@keyframes cssload-shadow {
-  50% {
-    transform: scale(0.5);
-    border-color: rgb(228, 228, 228);
-  }
-}
-
-@-o-keyframes cssload-shadow {
-  50% {
-    -o-transform: scale(0.5);
-    border-color: rgb(228, 228, 228);
-  }
-}
-
-@-ms-keyframes cssload-shadow {
-  50% {
-    -ms-transform: scale(0.5);
-    border-color: rgb(228, 228, 228);
-  }
-}
-
-@-webkit-keyframes cssload-shadow {
-  50% {
-    -webkit-transform: scale(0.5);
-    border-color: rgb(228, 228, 228);
-  }
-}
-
-@-moz-keyframes cssload-shadow {
-  50% {
-    -moz-transform: scale(0.5);
-    border-color: rgb(228, 228, 228);
-  }
-}
+.floating-petals { display: none; }
